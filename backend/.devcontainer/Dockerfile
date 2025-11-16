@@ -23,7 +23,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # アプリケーションコードをコピー
-COPY . .
+COPY . . 
 
 # サーバー起動
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
