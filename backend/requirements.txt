@@ -1,4 +1,4 @@
-mysqlclient
+mysqrtClient
 Django==5.2.8
 djangorestframework
 django-cors-headers

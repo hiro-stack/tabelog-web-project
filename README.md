@@ -20,4 +20,16 @@ frontのコンテナがVScodeで開けなかった。
 →問題点はnode_moduleの要領が大きすぎてfrontをdockerで開く際のタイムアウトに引っかかった
 .dockerignoreファイルを作成し、重いモジュールは無視することにした
 
+----containerの問題はおおむね解決した-----
+
+作業をするときは必ずコンテナに入ってから行う
+docker-compose.ymlがある場所でdocker-compose up
+ですべてのコンテナを起動
+docker-compose exec backend bash
+でbackendやfrontendのコンテナに移動してからpython manage.pyなどのコマンドを入力する
+
+
+
+
+
 
