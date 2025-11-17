@@ -27,6 +27,8 @@ docker-compose.ymlがある場所でdocker-compose up
 ですべてのコンテナを起動
 docker-compose exec backend bash
 でbackendやfrontendのコンテナに移動してからpython manage.pyなどのコマンドを入力する
+backendのみの起動だとDockerネットワークのdbとbackendのネットワークが切れてしまうため
+個別でもdockerネットワークの接続を切れないようにする必要がありそう、、
 
 
 
