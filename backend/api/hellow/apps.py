@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class HellowConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'hellow'
+    name = 'api.hellow'
