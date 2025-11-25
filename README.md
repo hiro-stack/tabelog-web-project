@@ -9,7 +9,7 @@ webアプリ化するプロジェクトである
 →対処方法docker-compose.ymlでDBが起動してからBackendコンテナを起動するように設定でクリア
 
 ##エラーでつまずいたところ②
-コンテナは起動できたが、VScodeでコンテナを開く際はcontainer.devの設定を行う必要があった。
+コンテナは起動できたが、VScodeでコンテナを開く際は.devcontainerの設定を行う必要があった。
 作成したはずの/app（ワークスペース）がないと怒られたので.devcontainerの書き方を記事で読んで応用させた
 .devcontainer内でworkspaceを明示させてエラー処理した
 以下が参考記事
@@ -28,7 +28,6 @@ docker-compose.ymlがある場所でdocker-compose up
 docker-compose exec backend bash
 でbackendやfrontendのコンテナに移動してからpython manage.pyなどのコマンドを入力する
 backendのみの起動だとDockerネットワークのdbとbackendのネットワークが切れてしまうため
-個別でもdockerネットワークの接続を切れないようにする必要がありそう、、
 
 
 
