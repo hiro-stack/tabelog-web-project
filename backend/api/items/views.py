@@ -11,7 +11,7 @@ class Backend(APIView):
         # 全オブジェクトを取得
         items = Item.objects.all()
         # シリアライザでシリアライズ（many=True がポイント）
-        serializer = ItemSerializer(items, many=True)
+        serializer = ItemmuSerializer(items, many=True)
         return Response(serializer.data)
 
     # POST /api/hello/
