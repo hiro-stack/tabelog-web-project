@@ -4,6 +4,7 @@ from rest_framework import status
 from .models import Item
 from .serializers import ItemSerializer
 
+
 class Backend(APIView):
 
     # GET /api/hello/
@@ -11,7 +12,7 @@ class Backend(APIView):
         # 全オブジェクトを取得
         items = Item.objects.all()
         # シリアライザでシリアライズ（many=True がポイント）
-        serializer = ItemmuSerializer(items, many=True)
+        serializer = ItemSerializer(items, many=True)
         return Response(serializer.data)
 
     # POST /api/hello/
