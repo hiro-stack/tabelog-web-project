@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/hellow/', include('api.hellow.urls')),
     path('api/items/', include('api.items.urls')),
+    path('api/tabelog/', include('api.tabelog.urls')),
 ]

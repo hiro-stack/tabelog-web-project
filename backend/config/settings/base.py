@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "api.hellow",
     "api.items",
+    "api.tabelog",
 ]
 
 MIDDLEWARE = [

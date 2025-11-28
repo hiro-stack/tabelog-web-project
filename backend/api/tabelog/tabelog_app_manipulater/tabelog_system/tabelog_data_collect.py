@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 import os
 from selenium import webdriver
 
@@ -45,13 +47,20 @@ class Tabelog_Data_Collect:
         self.output_folder_area = ""  # 必要に応じて設定
 
         options = webdriver.ChromeOptions()
-        options.add_argument("--headless")  # ヘッドレスモード（必要に応じて有効化）
-        options.add_argument("start-maximized")
-        options.add_argument("disable-infobars")
-        options.add_argument("--disable-extensions")
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--remote-debugging-port=9222")
+
+        # Chromium のバイナリを指定
+        options.binary_location = "/usr/bin/chromium"
+
         self.driver = webdriver.Chrome(
-            service=webdriver.chrome.service.Service(ChromeDriverManager().install())
+            service=Service("/usr/local/bin/chromedriver"),  # Dockerfile で配置済み
+            options=options,
         )
+
         print(f"Initialized with areas: {self.areas}, menus: {self.menus}")
 
         # User-Agentリスト
@@ -225,11 +234,12 @@ class Tabelog_Data_Collect:
         for tr in detail_info_trs:
 
             # 項目名を取り出し
-            th_text = tr.find_element(By.TAG_NAME, "th").text
-            print("項目名取得成功")
+            th_text = (
+                tr.find_element(By.TAG_NAME, "th").get_attribute("textContent").strip()
+            )
 
             # 項目キーの文字整形
-            self.text_th_maked(th_text)
+            th_text = self.text_th_maked(th_text)
 
             # 「予算」の項目は飛ばす
             if th_text == "予算":
@@ -247,39 +257,59 @@ class Tabelog_Data_Collect:
                         label = arial_element.get_attribute("aria-label")
 
                         if label == "Dinner":
-                            dinner_price = i.text
+                            dinner_price = i.get_attribute("textContent").strip()
                         if label == "Lunch":
-                            lunch_price = i.text
+                            lunch_price = i.get_attribute("textContent").strip()
                     except:
                         continue
 
-                td_text = self.text_td_maked(dinner_price)
-                td_text = self.text_td_maked(lunch_price)
+                dinner_price = self.text_td_maked(dinner_price)
+                lunch_price = self.text_td_maked(lunch_price)
+
+                print("Dinner price:", dinner_price)
+                print("Lunch price:", lunch_price)
 
                 detail_one_info["Dinner"] = dinner_price
                 detail_one_info["Lunch"] = lunch_price
 
             else:
                 # 項目バリューの値の取り出し
-                td_text = tr.find_element(By.TAG_NAME, "td").text
+                td_text = (
+                    tr.find_element(By.TAG_NAME, "td")
+                    .get_attribute("textContent")
+                    .strip()
+                )
 
                 td_text = self.text_td_maked(td_text)
                 detail_one_info[th_text] = td_text
 
+        print(f"{detail_one_info}")
+
     # 格納する項目バリューの文字整形
     def text_td_maked(self, td_text):
+        # 改行をスペースに変換
         td_text = td_text.replace("\n", " ")
+        td_text = td_text.replace("<br>", " ")
+        
+        # 不要なフレーズの削除
         td_text = td_text.replace("大きな地図を見る", "")
         td_text = td_text.replace("周辺のお店を探す", "")
         td_text = td_text.replace("利用金額分布を見る", "")
+        
+        # 余分な空白を1つにまとめる
+        td_text = ' '.join(td_text.split())
+        
         if not td_text.strip():
             td_text = "Non-Info"
+        print("td_text整形後:", td_text)
         return td_text
 
     # 格納する項目キーの文字整形
     def text_th_maked(self, th_text):
         th_text = th_text.replace("\n", " ")
-        th_text = th_text.replace("予約・ お問い合わせ", "お問い合わせ")
+        th_text = " ".join(th_text.split())
+        th_text = th_text.replace("予約・お問い合わせ", "お問い合わせ")
+        return th_text
 
     # 画面にあるURLを取得する
     def get_items_urls(self):

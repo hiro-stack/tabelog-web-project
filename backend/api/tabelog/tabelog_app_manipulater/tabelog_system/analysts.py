@@ -19,7 +19,7 @@ class Analysts:
         self.weight = weight
 
         # スケーリング対象のカラム
-        self.columns_to_scale = ["星5段階評価", "価格", "現在地点からの徒歩(分)"]
+        self.columns_to_scale = ["星5段階評価", "価格", "現在地点からの徒歩(分)", "声の大きさ"]
 
         # 出力時のカラム
         self.output_columns = [
