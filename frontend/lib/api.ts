@@ -36,3 +36,14 @@ export async function createName(name: string) {
   }
   return res.json(); // 保存されたデータが返る
 }
+
+
+export async function runTabelog(payload: unknown) {
+  const res = await fetch(`${API_URL}/api/tabelog/run/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error("API error");
+  return res.json();
+}

@@ -48,14 +48,18 @@ backend のみの起動だと Docker ネットワークの db と backend のネ
 
 ### エラーでつまずいたところ④
 
-selenium のセッションエラー  
-→ エラー文より chrome と chromedriver のバージョンの不一致
+selenium のセッションエラー
+
+#### (1)エラー個所の特定・検証
+エラー文よりchrome と chromedriver のバージョンの不一致
 
 原因:  
 最新バージョンを自動で取得しようとすると、自動的にバージョン 144.~ がインストールされる。  
 しかし、chrome のバージョンが 122.~ なので一致しないことによるエラー。
 
+#### (2)エラーの解消・検証
 バックエンドの Dockerfile より RUN コマンドから手動で 122.~ の chromedriver をインストールすることで対策。
+  →無事セッションエラーは解決された
 
 ---
 
@@ -150,11 +154,11 @@ th_text = (
 
 td も同様に変更：
 
-変更前:
+<変更前>
 
 td_text = tr.find_element(By.TAG_NAME, "td").text
 
-変更後:
+<変更後>
 
 td_text = (
     tr.find_element(By.TAG_NAME, "td")
