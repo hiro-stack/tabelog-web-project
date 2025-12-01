@@ -1,3 +1,5 @@
+import json
+from django.http import JsonResponse
 from django.views import View
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -9,43 +11,82 @@ from .models import TabelogRecord
 
 
 # これは CSRF トークン不要にするデコレータ→Djangoへのアクセスの時に誰が使ったかを確認しないようにする設定
+
+
 @method_decorator(csrf_exempt, name="dispatch")
 class TabelogView(View):
 
-    def get(self, request):
-        """GET → そのまま固定パラメータで実行"""
-        return self.run_tabelog(
-            current_location={
-                "name": "現在地",
-                "latitude": 35.834774,
-                "longitude": 139.912964,
-            },
-            areas=["北千住", "南流山"],
-            menus=["スペイン料理", "刀削麺"],
-            votes_result={"スペイン料理": [3], "刀削麺": [5, 4, 3]},
-            alpha=0.5,
-            weight={"distance": 1.1, "budget": 1.2, "evaluate": 1.3},
-            max_minutes=1000,
-            price_max=5000,
-            time_is="lunch",
+    def post(self, request):
+        """Next.js から送られた JSON を Application に渡して実行"""
+
+        # ---- 1. JSONの受け取り ----
+        try:
+            body = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+
+        # ---- 2. 必須キーは揃っている前提（フロントで整えているため）----
+        required_keys = [
+            "current_location", "areas", "menus", "votes_result",
+            "alpha", "weight", "max_minutes", "price_max", "time_is"
+        ]
+
+        missing = [key for key in required_keys if key not in body]
+        if missing:
+            return JsonResponse(
+                {"error": f"Missing required fields: {missing}"}, 
+                status=400
+            )
+
+        # ---- 3. Applicationにデータを渡して実行 ----
+        try:
+            application = Application(
+                current_location=body["current_location"],
+                areas=body["areas"],
+                menus=body["menus"],
+                votes_result=body["votes_result"],
+                alpha=body["alpha"],
+                weight=body["weight"],
+                max_minutes=body["max_minutes"],
+                price_max=body["price_max"],
+                time_is=body["time_is"],
+            )
+
+            # Application側のメイン処理実行
+            result = application.main()
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+        # ---- 4. フロントに返す ----
+        return JsonResponse(
+            {"message": "Success", "result": result},
+            status=200,
+            json_dumps_params={"ensure_ascii": False},
         )
 
-    def post(self, request):
-        """POST → パラメータを JSON で受け取って実行"""
-        import json
 
-        body = json.loads(request.body)
+    def get(self, request):
+        """GETは動作テスト用：固定データでApplicationを実行"""
 
-        return self.run_tabelog(
-            current_location=body.get("current_location"),
-            areas=body.get("areas"),
-            menus=body.get("menus"),
-            votes_result=body.get("votes_result"),
-            alpha=body.get("alpha"),
-            weight=body.get("weight"),
-            max_minutes=body.get("max_minutes"),
-            price_max=body.get("price_max"),
-            time_is=body.get("time_is"),
+        payload = {
+            "current_location": {"name": "現在地", "latitude": 35.0, "longitude": 139.0},
+            "areas": ["北千住"],
+            "menus": ["ラーメン"],
+            "votes_result": {"ラーメン": [5, 4]},
+            "alpha": 0.5,
+            "weight": {"distance": 1.0, "budget": 1.1, "evaluate": 1.2},
+            "max_minutes": 30,
+            "price_max": 2000,
+            "time_is": "lunch",
+        }
+
+        application = Application(**payload)
+        result = application.main()
+
+        return JsonResponse(
+            {"message": "Demo Run OK", "result": result},
+            json_dumps_params={"ensure_ascii": False}
         )
 
     def run_tabelog(

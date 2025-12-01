@@ -1,4 +1,4 @@
-// frontend/app/layout.tsx
+import 'bootstrap/dist/css/bootstrap.min.css'
 export const metadata = {
   title: "Tabelog Clone",
 };

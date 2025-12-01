@@ -177,3 +177,12 @@ tabelog の DOM の構造が変化していたことが原因
 要素の標準化による計算が妥当かどうか確かめる必要がありそう
 次回の課題
 
+# frontendのエラー・つまずいたところ
+
+package.jsonに直接ライブラリを書いてしまっていた
+ -> requirments.txtと同じ要領でやってしまった
+yarn add ライブラリを使って追加していく
+
+Bootstrapでデザインを作成する
+参考記事
+https://zenn.dev/bbled/articles/729e1a06b1a21b
