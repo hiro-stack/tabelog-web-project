@@ -38,8 +38,11 @@ export default function ConfirmPage() {
       const result = await runTabelog(data);
       console.log("🟢 Django Response:", result);
 
+      // ⬇⬇⬇ ★ 結果を保存 ★ ⬇⬇⬇
+      sessionStorage.setItem("tabelogResult", JSON.stringify(result));
+
       alert("🎉 送信成功しました！");
-      router.push("/confirm/complete"); // 任意で変更OK
+      router.push("/result"); // ← 結果ページへ
     } catch (error) {
       console.error("❌ Error:", error);
       alert("送信に失敗しました。");
@@ -57,15 +60,10 @@ export default function ConfirmPage() {
       </pre>
 
       <div className="d-flex gap-3 mt-4">
-        {/* 戻るボタン */}
-        <button
-          className="btn btn-secondary"
-          onClick={() => router.push("/")}
-        >
+        <button className="btn btn-secondary" onClick={() => router.push("/")}>
           ⬅ 入力画面に戻る
         </button>
 
-        {/* Django送信ボタン */}
         <button
           className="btn btn-success"
           onClick={handleSubmitToServer}

@@ -7,6 +7,24 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export { API_URL };
 
+export interface TabelogRecord {
+  name: string;
+  score: string;
+  star_rating: string;
+  price: string;
+  category: string;
+  walk_time: string;
+  latitude: string;
+  longitude: string;
+}
+
+export interface TabelogAPIResponse {
+  message: string;
+  records: TabelogRecord[];
+  csv_url: string;
+  html_url: string;
+}
+
 
 export interface ConfirmFormData {
   latitude: number;
@@ -64,7 +82,7 @@ export async function runTabelog(formData: ConfirmFormData) {
   });
 
   if (!res.ok) throw new Error("API error");
-  return res.json();
+  return res.json() as Promise<TabelogAPIResponse>;
 }
 
 
