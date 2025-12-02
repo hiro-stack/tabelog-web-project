@@ -1,4 +1,5 @@
 from .base import *
+from pathlib import Path
 
 DATABASES = {
     'default': {
@@ -16,3 +17,8 @@ DATABASES = {
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

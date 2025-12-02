@@ -7,24 +7,18 @@ from django.http import JsonResponse
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-
 from .tabelog_app_manipulater.app import Application
 from .models import TabelogRecord
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class TabelogView(View):
-
     def post(self, request):
-        """Next.js → Application実行 → CSV → DB保存 → URL返却"""
-
-        # ---- 1. JSON受け取り ----
         try:
             body = json.loads(request.body)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
 
-        # ---- 2. Application 実行 ----
         try:
             app = Application(
                 current_location=body["current_location"],
@@ -41,7 +35,6 @@ class TabelogView(View):
         except Exception as e:
             return JsonResponse({"error": f"Application Error: {str(e)}"}, status=500)
 
-        # ---- 3. File path based on Application output ----
         base_dir = os.path.dirname(__file__)
         result_dir = os.path.join(
             base_dir, "tabelog_app_manipulater", "tabelog_system", "data", "result_data"
@@ -50,8 +43,6 @@ class TabelogView(View):
         csv_path = os.path.join(result_dir, "result_data.csv")
         html_path = os.path.join(result_dir, "mapping.html")
 
-        # ---- 4. media/ にコピー (公開用) ----
-        # ---- 0. 既存 mediaフォルダ削除 ----
         if os.path.exists(settings.MEDIA_ROOT):
             shutil.rmtree(settings.MEDIA_ROOT)
 
@@ -62,18 +53,22 @@ class TabelogView(View):
 
         if os.path.exists(csv_path):
             shutil.copy(csv_path, csv_media_path)
+            print(f"✅ CSVコピー完了: {csv_media_path}")
+        else:
+            print(f"❌ CSVファイル見つからず: {csv_path}")
 
         if os.path.exists(html_path):
             shutil.copy(html_path, html_media_path)
+            print(f"✅ HTMLコピー完了: {html_media_path}")
+        else:
+            print(f"❌ HTMLファイル見つからず: {html_path}")
 
-        csv_url = settings.MEDIA_URL + "result_data.csv"
-        html_url = settings.MEDIA_URL + "result_map.html"
+        csv_url = request.build_absolute_uri("/media/result_data.csv")
+        html_url = request.build_absolute_uri("/media/result_map.html")
 
-        # ---- 5. CSV → DB保存 ----
         if not os.path.exists(csv_path):
             return JsonResponse({"error": "CSV not found"}, status=500)
 
-        # DB初期化（必要なら）
         TabelogRecord.objects.all().delete()
 
         with open(csv_path, encoding="utf-8-sig") as f:
@@ -91,7 +86,6 @@ class TabelogView(View):
                     longitude=row.get("経度") or "",
                 )
 
-        # ---- 6. DB結果をレスポンス用として取得 ----
         records = list(
             TabelogRecord.objects.values(
                 "name",
@@ -104,8 +98,9 @@ class TabelogView(View):
                 "longitude",
             )
         )
+        print(f"フロントに送るURL{csv_url}")
+        print(html_url)
 
-        # ---- 7. フロントに返却 ----
         return JsonResponse(
             {
                 "message": "Success",
@@ -118,5 +113,5 @@ class TabelogView(View):
         )
 
     def get(self, request):
-        """動作確認"""
         return JsonResponse({"status": "OK"})
+

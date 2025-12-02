@@ -2,16 +2,24 @@
 import { useEffect, useState } from "react";
 import type { TabelogAPIResponse } from "@/lib/api";
 
-
 export default function ResultPage() {
   const [data, setData] = useState<TabelogAPIResponse | null>(null);
+  const [htmlContent, setHtmlContent] = useState<string>("");
 
   useEffect(() => {
     const stored = sessionStorage.getItem("tabelogResult");
 
     if (stored) {
       try {
-        setData(JSON.parse(stored) as TabelogAPIResponse);
+        const parsed = JSON.parse(stored) as TabelogAPIResponse;
+        setData(parsed);
+        console.log("📦 受け取ったデータ:", parsed);
+
+        // HTMLをフェッチして埋め込む
+        fetch(parsed.html_url)
+          .then((res) => res.text())
+          .then((html) => setHtmlContent(html))
+          .catch((err) => console.error("❌ HTML取得エラー:", err));
       } catch (error) {
         console.error("❌ JSON parse error:", error);
       }
@@ -51,20 +59,16 @@ export default function ResultPage() {
 
       {data.html_url && (
         <>
-          <h2>🗺 マップ結果</h2>
-          <iframe
-            src={data.html_url}
-            style={{
-              width: "100%",
-              height: "450px",
-              border: "1px solid #ccc",
-              borderRadius: "6px",
-              marginTop: "10px",
-            }}
-          ></iframe>
+          <h2>📄 htmlファイル</h2>
+          <p>
+            <a href={data.html_url} download>
+              👉 htmlダウンロード
+            </a>
+          </p>
         </>
       )}
+
+    
     </div>
   );
 }
-
