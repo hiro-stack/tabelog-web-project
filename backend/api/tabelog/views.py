@@ -34,6 +34,8 @@ class TabelogView(View):
             app.main()
         except Exception as e:
             return JsonResponse({"error": f"Application Error: {str(e)}"}, status=500)
+        
+        ###frontに送信するcsvとhtmlデータの処理###
 
         base_dir = os.path.dirname(__file__)
         result_dir = os.path.join(
@@ -53,21 +55,24 @@ class TabelogView(View):
 
         if os.path.exists(csv_path):
             shutil.copy(csv_path, csv_media_path)
-            print(f"✅ CSVコピー完了: {csv_media_path}")
+            print(f"CSVコピー完了: {csv_media_path}")
         else:
-            print(f"❌ CSVファイル見つからず: {csv_path}")
+            print(f"CSVファイル見つからず: {csv_path}")
 
         if os.path.exists(html_path):
             shutil.copy(html_path, html_media_path)
-            print(f"✅ HTMLコピー完了: {html_media_path}")
+            print(f"HTMLコピー完了: {html_media_path}")
         else:
-            print(f"❌ HTMLファイル見つからず: {html_path}")
+            print(f"HTMLファイル見つからず: {html_path}")
 
         csv_url = request.build_absolute_uri("/media/result_data.csv")
         html_url = request.build_absolute_uri("/media/result_map.html")
 
         if not os.path.exists(csv_path):
             return JsonResponse({"error": "CSV not found"}, status=500)
+        
+
+        ###取得したデータをMySQLに保存###
 
         TabelogRecord.objects.all().delete()
 
@@ -86,6 +91,8 @@ class TabelogView(View):
                     longitude=row.get("経度") or "",
                 )
 
+        ###MySQLのデータを取得してfrontに送信する###
+
         records = list(
             TabelogRecord.objects.values(
                 "name",
@@ -98,8 +105,8 @@ class TabelogView(View):
                 "longitude",
             )
         )
-        print(f"フロントに送るURL{csv_url}")
-        print(html_url)
+
+        ###実際にfrontに送信するデータ###
 
         return JsonResponse(
             {

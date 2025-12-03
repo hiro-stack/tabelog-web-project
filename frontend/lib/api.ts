@@ -1,12 +1,14 @@
 // 環境に応じて API の URL を切り替え
 const API_URL = process.env.NEXT_PUBLIC_API_URL 
-  ? process.env.NEXT_PUBLIC_API_URL  // .env で指定されている場合
+  ? process.env.NEXT_PUBLIC_API_URL  //← .env で指定されている場合(今回は未使用)
   : typeof window !== "undefined" 
     ? "http://localhost:8000"       // ブラウザ（開発中）
     : "http://backend:8000";        // サーバーサイド / Docker 内
 
 export { API_URL };
 
+
+// Django から返される結果データの各レコードの型
 export interface TabelogRecord {
   name: string;
   score: string;
@@ -18,6 +20,7 @@ export interface TabelogRecord {
   longitude: string;
 }
 
+// Django からResponseとして返されるデータの型
 export interface TabelogAPIResponse {
   message: string;
   records: TabelogRecord[];
@@ -25,7 +28,7 @@ export interface TabelogAPIResponse {
   html_url: string;
 }
 
-
+//ユーザーが入力したデータの型
 export interface ConfirmFormData {
   latitude: number;
   longitude: number;
@@ -40,7 +43,8 @@ export interface ConfirmFormData {
   mealType: string;
 }
 
-
+/*
+// ***　↓　動作確認用API　↓　*** 
 export async function getHello() {
   const res = await fetch(`${API_URL}/api/hellow/backend/`);
   if (!res.ok) {
@@ -55,7 +59,7 @@ export async function getNames() {
   if (!res.ok) {
     throw new Error("GET API Error");
   }
-  return res.json(); // [{ id: 1, name: "テストA" }, { id: 2, name: "テストB" }, ...]
+  return res.json();
 }
 
 // POST: name を登録
@@ -71,7 +75,13 @@ export async function createName(name: string) {
   return res.json(); // 保存されたデータが返る
 }
 
+//***　↑　ここまで動作確認用のAPI処理　↑ 　***
+*/
 
+
+
+// ---POST: Django の tabelog/run/ API を呼び出す関数---
+// データの送信と、レスポンスの受け取りを行う
 export async function runTabelog(formData: ConfirmFormData) {
   const payload = formatToApplicationPayload(formData);
 
@@ -86,13 +96,12 @@ export async function runTabelog(formData: ConfirmFormData) {
 }
 
 
-// --- Applicationに送る形式へ変換 ---
+// --- ユーザーが入力した値から実際にDjangoに送るデータに加工する処理 ---
 function formatToApplicationPayload(formData: ConfirmFormData) {
-  // votes_result作成（方式③）
   const votes_result: Record<string, number[]> = {};
 
   formData.members.forEach((member: { food: string; power: number }) => {
-    if (!member.food) return; // 食べたいものが空なら無視
+    if (!member.food) return;
   
     if (!votes_result[member.food]) {
       votes_result[member.food] = [];
@@ -108,7 +117,7 @@ function formatToApplicationPayload(formData: ConfirmFormData) {
       longitude: Number(formData.longitude),
     },
     areas: formData.areas.map((a: { name: string }) => a.name),
-    menus: [...new Set(formData.members.map((m: { food: string }) => m.food))], // 重複削除
+    menus: [...new Set(formData.members.map((m: { food: string }) => m.food))],
     votes_result,
     alpha: formData.decisionMode,
     weight: {

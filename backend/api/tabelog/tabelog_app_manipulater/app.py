@@ -24,9 +24,11 @@ class Application:
         self.mapping = Mapping(current_location)
 
     def app(self):
+        #dataが残っていた場合、削除する 
         data_path = os.path.join(os.path.dirname(__file__), "tabelog_system", "data")
         if os.path.exists(data_path) and os.path.isdir(data_path):
-            shutil.rmtree(data_path)  # フォルダごと削除
+            shutil.rmtree(data_path)
+
         self.tabelog_data_collecter.main()
         self.data_maked.main()
         self.analysts.main()
