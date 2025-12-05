@@ -41,24 +41,38 @@ export default function ConfirmPage() {
   };
 
   return (
-    <div className="container mt-5">
-      <h1 className="mb-3">送信内容確認</h1>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-10 px-4">
+    <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8">
+    <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">送信内容の確認</h1>
+    
+    <ConfirmSummary data={data} />
 
-      <ConfirmSummary data={data} />
 
-      <div className="d-flex gap-3 mt-4">
-        <button className="btn btn-secondary" onClick={() => router.push("/")}>
-          ⬅ 入力画面に戻る
-        </button>
-
-        <button
-          className="btn btn-success"
-          onClick={handleSubmitToServer}
-          disabled={loading}
+    <div className="flex justify-between mt-8">
+      <button
+        className="px-4 py-2 rounded-xl bg-gray-300 hover:bg-gray-400 text-gray-800"
+        onClick={() => router.push("/")}
         >
-          {loading ? "送信中..." : "計算を開始する"}
-        </button>
-      </div>
+        ⬅ 入力画面に戻る
+      </button>
+
+      <button
+        className="relative px-6 py-2 rounded-xl bg-green-500 hover:bg-green-600 disabled:opacity-50"
+        onClick={handleSubmitToServer}
+        disabled={loading}
+        >
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+            送信中...
+          </span>
+          ) : (
+            "計算を開始する"
+          )
+        }
+      </button>
     </div>
+  </div>
+  </div>
   );
 }

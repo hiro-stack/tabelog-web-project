@@ -14,55 +14,54 @@ export default function ResultPage() {
         const stored = sessionStorage.getItem("tabelogResult");
         return stored ? JSON.parse(stored) : null;
     });
+    
+    if (!data) {
+      return <p style={{ padding: "20px" }}>⏳ 結果を読み込み中...</p>;
+    }
+    
+    return (
+      <div style={{ maxWidth: "900px", margin: "40px auto", padding: "20px" }}>
+      <h1 className="text-xl font-bold mb-4">📊 分析結果</h1>
 
-  if (!data) {
-    return <p style={{ padding: "20px" }}>⏳ 結果を読み込み中...</p>;
-  }
 
-  return (
-    <div style={{ maxWidth: "900px", margin: "40px auto", padding: "20px" }}>
-      <h1>📊 分析結果</h1>
-
-      <table className="table">
-        <thead>
-            <tr>
-            <th>店名</th>
-            <th>点数</th>
-            <th>星5段階評価</th>
-            <th>価格</th>
-            <th>カテゴリ</th>
-            <th>徒歩(分)</th>
-            </tr>
+      <table className="w-full table-auto border-collapse border border-gray-300">
+        <thead className="bg-gray-100">
+          <tr>
+          <th className="border border-gray-300 px-4 py-2">店名</th>
+          <th className="border border-gray-300 px-4 py-2">点数</th>
+          </tr>
         </thead>
         <tbody>
-            {data.records.map((r, idx) => (
-            <tr key={idx}>
-                <td>{r.name}</td>
-                <td>{r.score}</td>
-                <td>{r.star_rating}</td>
-                <td>{r.price}</td>
-                <td>{r.category}</td>
-                <td>{r.walk_time}</td>
-            </tr>
-            ))}
+          {data.records.map((r, idx) => (
+          <tr key={idx} className="text-center">
+          <td className="border border-gray-300 px-4 py-2">{r.name}</td>
+          <td className="border border-gray-300 px-4 py-2">{Math.floor(parseFloat(r.score) * 100) / 100}</td>
+          </tr>
+          ))}
         </tbody>
       </table>
+
+
       {data.html_url && (
-        <>
-          <h2>📄 htmlファイル</h2>
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold">📄 地図</h2>
           <p>
-            <a href={data.html_url} download>
-              👉 htmlダウンロード
+            <a href={data.html_url} download className="text-blue-600 underline">
+            👉 地図で表示
             </a>
           </p>
-        </>
+        </div>
       )}
-    <button
-        className="btn btn-secondary mt-4"
-        onClick={() => router.push("/form")}
+
+
+      <button
+        className="mt-6 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded"
+        onClick={() => router.push("/searchForm")}
       >
-        ⬅ 検索画面に戻る
-    </button>
-    </div>
-  );
+      ⬅ 検索画面に戻る
+      </button>
+      
+      </div>
+      
+    );
 }
