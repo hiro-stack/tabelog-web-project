@@ -52,7 +52,7 @@ Tabelog の飲食店データをもとに、グループ内での最適なお店
 ## 🧭 使用したときのシステムの動き
 
 ### トップページ
-![トップページ](./screenshot_images/confirm_page.png)
+![トップページ](./screenshot_images/form_page.png)
 
 #### 入力例
 ![入力後のページ1](./screenshot_images/入力後のページ1.png)
