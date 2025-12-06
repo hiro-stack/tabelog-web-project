@@ -279,11 +279,11 @@ Bootstrapでデザインを作成する
 参考記事
 https://zenn.dev/bbled/articles/729e1a06b1a21b
 
-#エラーで躓いたところ
+### エラーでつまずいたところ
 バックエンド側でmedia/result.cdv, result_map.htmlを生成できたが
 frontで持ってこようとしたときに空になっていた
 
-# (1)エラー個所の特定
+#### (1)エラー個所の特定
 ①media/にデータが格納されていない
 　→media/でどっちもちゃんと生成できていた
 
@@ -312,7 +312,7 @@ frontで持ってこようとしたときに空になっていた
   http://localhost:8000/media/result_map.html
   であるので、アクセスするときの自動変換に問題があると特定できた。
 
-  # エラーの解消
+  ##### エラーの解消
   Djangoの設定でBASE_URLがさす場所がhttp://localhost:8000/config
   なのでhttp://localhost:8000に変えてあげる
 
