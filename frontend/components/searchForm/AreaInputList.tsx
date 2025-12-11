@@ -31,7 +31,7 @@ export default function AreaInputList({ areas, setAreas }: AreaInputListProps) {
             className="form-control"
             value={area.name}
             onChange={(e) => updateArea(idx, e.target.value)}
-            placeholder={`エリア ${idx + 1}`}
+            placeholder="例: 北千住駅"
           />
           <button
             type="button"
@@ -43,7 +43,7 @@ export default function AreaInputList({ areas, setAreas }: AreaInputListProps) {
         </div>
       ))}
       <button type="button" className="btn btn-primary" onClick={addArea}>
-        ＋ エリア追加
+        ＋ エリア追加(駅名)
       </button>
     </div>
   );

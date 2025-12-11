@@ -22,13 +22,14 @@ export default function WeightSelectorGroup({
   const renderButtons = (selected: number, setter: (val: number) => void) => (
     <div className="d-flex flex-wrap gap-2">
       {[...Array(10)].map((_, i) => {
-        const weight = 1.0 + i * 0.1;
+        const weight = 1.0 + (i + 1) * 0.1;
+        const roundedWeight = parseFloat(weight.toFixed(1)); 
         return (
           <button
             key={i}
             type="button"
-            className={`btn btn-sm ${selected === weight ? "btn-primary" : "btn-outline-secondary"}`}
-            onClick={() => setter(parseFloat(weight.toFixed(1)))}
+            className={`btn btn-sm ${selected === roundedWeight ? "btn-primary" : "btn-outline-secondary"}`}
+            onClick={() => setter(roundedWeight)}
           >
             {i + 1}
           </button>

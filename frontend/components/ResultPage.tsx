@@ -28,7 +28,8 @@ export default function ResultPage() {
         <thead className="bg-gray-100">
           <tr>
           <th className="border border-gray-300 px-4 py-2">店名</th>
-          <th className="border border-gray-300 px-4 py-2">点数</th>
+          <th className="border border-gray-300 px-4 py-2">最終点数</th>
+          <th className="border border-gray-300 px-4 py-2">ジャンル</th>
           </tr>
         </thead>
         <tbody>
@@ -36,6 +37,7 @@ export default function ResultPage() {
           <tr key={idx} className="text-center">
           <td className="border border-gray-300 px-4 py-2">{r.name}</td>
           <td className="border border-gray-300 px-4 py-2">{Math.floor(parseFloat(r.score) * 100) / 100}</td>
+          <td className="border border-gray-300 px-4 py-2">{r.category}</td>
           </tr>
           ))}
         </tbody>

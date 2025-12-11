@@ -39,7 +39,7 @@ export default function MemberInputList({ members, setMembers }: MemberInputList
           </div>
 
           <div className="mb-2">
-            <label className="form-label">決定権（1〜5）</label>
+            <label className="form-label">決定権（1は決定権が低い〜5は決定権が高い）</label>
             <div className="d-flex gap-3">
               {[1, 2, 3, 4, 5].map((val) => (
                 <div className="form-check form-check-inline" key={val}>

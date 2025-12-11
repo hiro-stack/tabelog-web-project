@@ -59,6 +59,8 @@ export default function SearchForm() {
           <h1 className="card-title mb-4">検索フォーム</h1>
 
           {/* 現在地 */}
+           <small className="form-text text-muted">※緯度・経度は Google マップなどで調べることができます。以下を参考にしてください</small>
+           <small className="form-text text-muted">https://support.google.com/maps/answer/18539?hl=ja&co=GENIE.Platform%3DDesktop</small>
           <div className="mb-4">
             <label className="form-label">現在地（緯度）</label>
             <input type="number" className="form-control" value={latitude} onChange={(e) => setLatitude(e.target.value)} />
