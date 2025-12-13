@@ -111,7 +111,7 @@ Tabelog の飲食店データをもとに、グループ内での最適なお店
 ### 🔧 前提条件
 
 - Docker / Docker Desktop のインストールが必要です  
-  → [Docker Desktop ダウンロード](https://www.docker.com/products/docker-desktop)
+  →docker-compose.ymlがあるファイル階層まで行く。 
 
 ### 🚀 起動手順
 
