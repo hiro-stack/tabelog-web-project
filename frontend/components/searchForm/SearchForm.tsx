@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { useRouter } from "next/navigation";
 
 import AreaInputList from "@/components/searchForm/AreaInputList";
@@ -35,6 +35,33 @@ export default function SearchForm() {
   const [mealType, setMealType] = useState<string>("dinner");
 
   const [formErrors, setFormErrors] = useState<string[]>([]);
+
+
+  // セッションストレージから保存されたデータを読み込む
+  useEffect(() => {
+    const saved = sessionStorage.getItem("searchFormData");
+    if (!saved) return;
+
+    try {
+      const parsed = JSON.parse(saved);
+      
+      if (parsed.latitude !== undefined) setLatitude(parsed.latitude);
+      if (parsed.longitude !== undefined) setLongitude(parsed.longitude);
+      if (Array.isArray(parsed.areas)) setAreas(parsed.areas);
+      if (Array.isArray(parsed.members)) setMembers(parsed.members);
+      if (parsed.decisionMode !== undefined) setDecisionMode(parsed.decisionMode);
+      if (parsed.weightDistance !== undefined) setWeightDistance(parsed.weightDistance);
+      if (parsed.weightBudget !== undefined) setWeightBudget(parsed.weightBudget);
+      if (parsed.weightRating !== undefined) setWeightRating(parsed.weightRating);
+      if (parsed.maxPrice !== undefined) setMaxPrice(parsed.maxPrice);
+      if (parsed.maxTravelMinutes !== undefined) setMaxTravelMinutes(parsed.maxTravelMinutes);
+      if (parsed.mealType !== undefined) setMealType(parsed.mealType);
+
+    } catch (e) {
+      console.error("保存されたデータの読み込みに失敗しました", e);
+    }
+  
+  }, []);
 
 
   
@@ -85,6 +112,23 @@ export default function SearchForm() {
       return;
     }
 
+    // フォームデータをセッションストレージに保存
+    const data = {
+      latitude,
+      longitude,
+      areas,
+      members,
+      decisionMode,
+      weightDistance,
+      weightBudget,
+      weightRating,
+      maxPrice,
+      maxTravelMinutes,
+      mealType,
+    };
+    
+    sessionStorage.setItem("searchFormData", JSON.stringify(data));
+
     setFormErrors([]);
     router.push("/confirm");
   };
@@ -130,6 +174,7 @@ export default function SearchForm() {
             <input
               type="number"
               className="form-control mb-2"
+              placeholder="例:5000"
               min="1"
               value={maxPrice || ""}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
@@ -139,6 +184,7 @@ export default function SearchForm() {
             <input
               type="number"
               className="form-control"
+              placeholder="20"
               min="1"
               value={maxTravelMinutes || ""}
               onChange={(e) => setMaxTravelMinutes(Number(e.target.value))}

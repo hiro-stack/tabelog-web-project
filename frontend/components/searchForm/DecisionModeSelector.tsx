@@ -20,7 +20,7 @@ export default function DecisionModeSelector({ value, onChange }: Props) {
           checked={value === 0}
           onChange={() => onChange(0)}
         />
-        <label className="form-check-label">多数決を重視する</label>
+        <label className="form-check-label">多数決で食べたい項目を決定する</label>
       </div>
       <div className="form-check">
         <input
@@ -31,7 +31,7 @@ export default function DecisionModeSelector({ value, onChange }: Props) {
           checked={value === 1}
           onChange={() => onChange(1)}
         />
-        <label className="form-check-label">決定権の強さを重視する</label>
+        <label className="form-check-label">決定権の強さを重視しして食べたいものを身める</label>
       </div>
     </div>
   );
