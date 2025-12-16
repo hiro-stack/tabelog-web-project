@@ -309,7 +309,7 @@ tabelog の DOM の構造が変化していたことが原因
 → 従来のスクレイピング方法だと要素の内容を取得できなかった
 
 
-# frontendのエラー・つまずいたところ
+## frontendのエラー・つまずいたところ
 
 package.jsonに直接ライブラリを書いてしまっていた
  -> requirments.txtと同じ要領でやってしまった
@@ -319,46 +319,39 @@ Bootstrapでデザインを作成する
 参考記事
 https://zenn.dev/bbled/articles/729e1a06b1a21b
 
-#エラーで躓いたところ
+### エラーで躓いたところ
 バックエンド側でmedia/result.cdv, result_map.htmlを生成できたが
 frontで持ってこようとしたときに空になっていた
 
-# (1)エラー個所の特定
-①media/にデータが格納されていない
-　→media/でどっちもちゃんと生成できていた
+#### (1)エラー個所の特定
+①media/にデータが格納されていない<br>
+　→media/でどっちもちゃんと生成できていた<br>
 
-①バックエンドのフロント部分へのデータ送出に問題がある？
-　→要確認
-   →公開されているはずのmedia/にブラウザでアクセスしようとしたら見つからないとエラーが出た
+①バックエンドのフロント部分へのデータ送出に問題がある？<br>
+　→要確認<br>
+   →公開されているはずのmedia/にブラウザでアクセスしようとしたら見つからないとエラーが出た<br>
    　
-②Dockerの設定に問題がある
-　→ほかのデータはちゃんと映っていたので考えにくい
+②Dockerの設定に問題がある<br>
+　→ほかのデータはちゃんと映っていたので考えにくい<br>
 
-③フロントエンドのデータ受け取りの部分に問題がある
-　→ほかのデータはちゃんと送られているのでmedia/だけ失敗したとは考えにくい
+③フロントエンドのデータ受け取りの部分に問題がある<br>
+　→ほかのデータはちゃんと送られているのでmedia/だけ失敗したとは考えにくい<br>
 
-④表示部分に問題がある？
-　→要確認
-　　→ファイルが見つからないと404 Not Foundのエラーが出た
+④表示部分に問題がある？<br>
+　→要確認<br>
+　　→ファイルが見つからないと404 Not Foundのエラーが出た<br>
 
-以上の分析結果より確認を行う
-　→問題はファイルの送出部分である
-　　もっと詳しく見てみる
-　ブラウザでhttp://localhost:8000/media/result_data.csv
-　でアクセスしようとすると
-　http://localhost:8000/config/media/result_data.csvに変換されるが
-　実際に保管されているのは
-　http://localhost:8000/media/result_data.csv
-  http://localhost:8000/media/result_map.html
-  であるので、アクセスするときの自動変換に問題があると特定できた。
+以上の分析結果より確認を行う<br>
+　→問題はファイルの送出部分である<br>
+　　もっと詳しく見てみる<br>
+　ブラウザでhttp://localhost:8000/media/result_data.csv<br>
+　でアクセスしようとすると<br>
+　http://localhost:8000/config/media/result_data.csvに変換されるが<br>
+　実際に保管されているのは<br>
+　http://localhost:8000/media/result_data.csv,
+  http://localhost:8000/media/result_map.html<br>
+  であるので、アクセスするときの自動変換に問題があると特定できた。<br>
 
-  # エラーの解消
+  #### エラーの解消
   Djangoの設定でBASE_URLがさす場所がhttp://localhost:8000/config
-  なのでhttp://localhost:8000に変えてあげる
-
-  
-  　
-
-
-　
-
+  なのでhttp://localhost:8000に変えてあげる<br>
